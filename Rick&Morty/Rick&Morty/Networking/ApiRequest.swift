@@ -15,6 +15,7 @@ enum ApiError: Error {
 
 protocol ApiUrlRequest {
     func searchCharacterBy(name: String) async throws -> CharacterSearchedEntity
+    func characterRequest(id: Int) async throws -> CharacterEntity
 }
 
 struct ApiRequest {
@@ -25,6 +26,28 @@ struct ApiRequest {
 }
 
 extension ApiRequest: ApiUrlRequest {
+    
+    func characterRequest(id: Int) async throws -> CharacterEntity {
+        let endpoint = "https://rickandmortyapi.com/api/character/\(id)"
+        
+        guard let url = URL(string: endpoint) else {
+            throw ApiError.invalidURL
+        }
+        
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+            throw ApiError.invalidResponse
+        }
+        
+        do {
+            let decoder = JSONDecoder()
+            return try decoder.decode(CharacterEntity.self, from: data)
+        } catch {
+            throw ApiError.invalidData
+        }
+    }
+    
     func searchCharacterBy(name: String) async throws -> CharacterSearchedEntity {
         let endpoint = "https://rickandmortyapi.com/api/character/?name=\(encodeSpaceInText(name))"
         

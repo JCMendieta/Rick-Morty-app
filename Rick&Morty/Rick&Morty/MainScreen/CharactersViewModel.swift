@@ -49,4 +49,18 @@ class CharactersViewModel: ObservableObject {
     func updateSelectedCharacter(with character: CharacterCardModel) {
         selectedCharacter = character
     }
+    
+    func getDetailCardViewModel() -> DetailScreenViewModel {
+        DetailScreenViewModel(data: DetailScreenModel(id: selectedCharacter.characterId), fetchData: ApiRequest())
+    }
+    
+    func addCharacterToList() {
+        data.cards.append(selectedCharacter)
+    }
+}
+
+extension CharactersViewModel {
+    public static var testModel: CharactersViewModel = {
+        CharactersViewModel(data: .testModel, fetchData: ApiRequest())
+    }()
 }

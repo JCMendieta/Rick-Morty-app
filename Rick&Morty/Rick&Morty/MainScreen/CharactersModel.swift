@@ -18,3 +18,11 @@ struct CharactersModel {
         self.cards = cards
     }
 }
+
+extension CharactersModel {
+    public static var testModel: CharactersModel = {
+       CharactersModel(
+        title: "Characters",
+        cards: [.testModel, .testModel, .testModel, .testModel, .testModel, .testModel, .testModel])
+    }()
+}
