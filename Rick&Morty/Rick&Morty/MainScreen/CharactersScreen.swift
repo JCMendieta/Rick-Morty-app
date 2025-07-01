@@ -11,6 +11,8 @@ struct CharactersScreen: View {
     @StateObject var viewModel: CharactersViewModel
     @State var searchText = ""
     @State private var showDetailScreen = false
+    @State private var showDetailScreenWithAddIcon = false
+    @State var shouldSaveCard = false
     
     init(
         viewModel: CharactersViewModel = .init(fetchData: ApiRequest())
@@ -22,14 +24,9 @@ struct CharactersScreen: View {
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
-                ForEach(viewModel.data.cards) { card in
-                    CharacterCardView(model: card) { card in
-                        viewModel.updateSelectedCharacter(with: card)
-                        showDetailScreen = true
-                    }
-                    .fullScreenCover(isPresented: $showDetailScreen) {
-                        EmptyView()
-                    }
+                CharacterCardList(cards: viewModel.data.cards) { card in
+                    viewModel.updateSelectedCharacter(with: card)
+                    showDetailScreen = true
                 }
             }
             .frame(maxWidth: .infinity)
@@ -38,16 +35,30 @@ struct CharactersScreen: View {
             .navigationTitle(
                 Text(viewModel.data.title)
             )
-            .toolbarBackground(.blue, for: .navigationBar)
         }
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search a character")) {
             ForEach(viewModel.searchedList) { character in
                 Button {
                     viewModel.updateSelectedCharacter(with: character)
+                    showDetailScreenWithAddIcon.toggle()
                 } label: {
                     Text("\(character.name) - \(character.characterId)")
                 }
             }
+        }
+        .fullScreenCover(isPresented: $showDetailScreen) {
+            DetailScreen(
+                viewModel: viewModel.getDetailCardViewModel(),
+                showAddButton: false,
+                saveCard: $shouldSaveCard
+            )
+        }
+        .sheet(isPresented: $showDetailScreenWithAddIcon) {
+            DetailScreen(
+                viewModel: viewModel.getDetailCardViewModel(),
+                showAddButton: true,
+                saveCard: $shouldSaveCard
+            )
         }
         .onChange(of: searchText) { _, newValue in
             Task {
@@ -61,9 +72,12 @@ struct CharactersScreen: View {
             }
         }
         .environment(\.colorScheme, .dark)
+        .onChange(of: shouldSaveCard) { _, newValue in
+            viewModel.addCharacterToList()
+        }
     }
 }
 
-//#Preview {
-//    CharactersScreen()
-//}
+#Preview {
+    CharactersScreen(viewModel: .testModel)
+}

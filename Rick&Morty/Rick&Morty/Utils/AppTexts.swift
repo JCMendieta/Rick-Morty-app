@@ -21,4 +21,21 @@ extension Text {
             .foregroundColor(.white)
             .font(.body)
     }
+    
+    func styledTitleCard() -> some View {
+        self
+            .font(.subheadline)
+            .fontWeight(.bold)
+            .textCase(.uppercase)
+            .foregroundColor(.white)
+    }
+    
+    func styledBodyCard() -> some View {
+        self
+            .font(.body)
+            .lineLimit(2)
+            .minimumScaleFactor(0.5)
+            .multilineTextAlignment(.leading)
+            .foregroundColor(.white)
+    }
 }
