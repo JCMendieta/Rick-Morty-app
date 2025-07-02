@@ -37,3 +37,22 @@ struct DetailScreenModel {
         self.cards = cards
     }
 }
+
+extension DetailScreenModel {
+    public static let testModel: DetailScreenModel = {
+       DetailScreenModel(
+        name: "Rick Sanchez",
+        picture: .testModel,
+        species: "Human",
+        gender: "Male",
+        type: "Genetic experiment",
+        status: "unknown",
+        cards: [
+            DetailCardModel(type: .place, title: "Origin", body: "Earth (Replacement Dimension)", image: .origin),
+            DetailCardModel(type: .place, title: "Location", body: "Citadel of Ricks", image: .location),
+            DetailCardModel(type: .episode, title: "Episodes", body: "", image: .episode),
+            DetailCardModel(type: .moreInfo, title: "More Info", body: "", image: .moreInfo)
+        ]
+       )
+    }()
+}

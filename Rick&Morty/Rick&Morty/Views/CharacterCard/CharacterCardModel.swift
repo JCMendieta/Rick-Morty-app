@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CharacterCardModel: Identifiable {
+struct CharacterCardModel: Identifiable, Equatable {
     let id: UUID
     let characterId: Int
     let name: String
